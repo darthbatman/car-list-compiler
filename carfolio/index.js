@@ -54,47 +54,109 @@ var getModelsOfMake = function(make){
 
                                                 var $ = cheerio.load(html);
 
+                                                var car = {
+                                                    make: make,
+                                                    model: $('.model')[0].children[0].data,
+                                                    year: $('.Year')[0].children[0].data
+                                                };
+
                                                 $('th').each(function(index){
                                                     if ($(this)[0].children[0]){
                                                         if ($(this)[0].children[0].data && /\S/.test($(this)[0].children[0].data)){
-                                                            console.log($('title')[0].children[0].data);
-                                                            console.log($(this)[0].children[0].data);
+                                                            //console.log($(this)[0].children[0].data);
                                                             if (!$(this)[0].parent.children[2]){
-                                                                console.log($(this)[0].parent.children[1].children[0].data);
+                                                                car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[1].children[0].data;
+                                                                //console.log($(this)[0].parent.children[1].children[0].data);
                                                             }
                                                             else if (!$(this)[0].parent.children[2].children){
-                                                                //console.log("1");
                                                                 if (!$(this)[0].parent.children[3]){
-                                                                    //console.log("o");
-                                                                    console.log(!$(this)[0].parent.children);
+                                                                    car[$(this)[0].children[0].data.toLowerCase()] = "";
+                                                                    //console.log("");
                                                                 }
                                                                 else if (!$(this)[0].parent.children[3].children[0]){
-                                                                    //console.log("n");
-                                                                    //console.log($(this)[0].parent.children);
-                                                                    console.log("");
+                                                                    car[$(this)[0].children[0].data.toLowerCase()] = "";
+                                                                    //console.log("");
                                                                 }
                                                                 else {
-                                                                    //console.log("e");
-                                                                    console.log($(this)[0].parent.children[3].children[0].data);
+                                                                    if ($(this)[0].children[0].data.toLowerCase().indexOf("kerb weight") != -1){
+                                                                        car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].children[0].data;
+                                                                        //console.log($(this)[0].parent.children[3].children[0].children[0].data);
+                                                                    }
+                                                                    else {
+                                                                        if ($(this)[0].children[0].data.toLowerCase().indexOf("stroke ratio") != -1){
+                                                                            car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].children[0].data;
+                                                                            //console.log($(this)[0].parent.children[3].children[0].children[0].data);
+                                                                        }
+                                                                        else {
+                                                                            car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].data;
+                                                                            //console.log($(this)[0].parent.children[3].children[0].data);
+                                                                        }  
+                                                                    }
                                                                 }
                                                             }
                                                             else if (!$(this)[0].parent.children[2].children[0]){
-                                                                //console.log("2");
-                                                                console.log("");
-                                                                //console.log($(this)[0].parent.children[2]);
+                                                                car[$(this)[0].children[0].data.toLowerCase()] = "";
+                                                                //console.log("");
                                                             }
                                                             else {
-                                                                console.log($(this)[0].parent.children[2].children[0].data);
+                                                                car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[2].children[0].data;
+                                                                //console.log($(this)[0].parent.children[2].children[0].data);
                                                             }
                                                         }
                                                         else {
                                                             if ($(this)[0].children[0].name == 'strong' && $(this)[0].children[0].children[0]){
-                                                                console.log($(this)[0].children[0].children[0].data);
-                                                                console.log($(this)[0].parent.children[3].children[0].children[0].data);
+                                                                //console.log($(this)[0].children[0].children[0].data);
+                                                                if (!$(this)[0].parent.children[3].children[0].children){
+                                                                    car[$(this)[0].children[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].data;
+                                                                    //console.log($(this)[0].parent.children[3].children[0].data);
+                                                                }
+                                                                else if (!$(this)[0].parent.children[3].children[0].children[0]){
+                                                                    car[$(this)[0].children[0].children[0].data.toLowerCase()] = "";
+                                                                    //console.log("");
+                                                                }
+                                                                else {
+                                                                    car[$(this)[0].children[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].children[0].data;
+                                                                    //console.log($(this)[0].parent.children[3].children[0].children[0].data);
+                                                                }
                                                             }
                                                         }
                                                     }
                                                 });
+                    
+                                                //console.log("Bore x Stroke");
+                                                var bore = undefined;
+                                                var stroke = undefined;
+                                                $('a').each(function(index){
+                                                    if ($(this)[0].attribs.href.indexOf("bore") != -1){
+                                                        if (!bore){
+                                                            bore = $(this)[0].attribs.href.substring($(this)[0].attribs.href.lastIndexOf("=") + 1);
+                                                        }
+                                                        else {
+                                                            stroke = $(this)[0].attribs.href.substring($(this)[0].attribs.href.lastIndexOf("=") + 1);
+                                                        }
+                                                    }
+                                                });
+                                                //console.log(bore + " x " + stroke);
+                                                if (bore && stroke){
+                                                   car["Bore x Stroke".toLowerCase()] = bore + " x " + stroke; 
+                                                }
+                                                else {
+                                                    car["Bore x Stroke".toLowerCase()] = '';
+                                                }
+                                                for (var key in car) {
+                                                  if (car.hasOwnProperty(key)) {
+                                                    if (key == 'carfolio.com id' || key == 'carfolio calculated ' || key == 'production total' || key == 'model code' || key == 'model family' || key == 'rac rating' || key == 'insurance classification' || key == 'tax band'){
+                                                        delete car[key];
+                                                    }
+                                                    else if (!car[key]){
+                                                        car[key] = '';
+                                                    }
+                                                    else {
+                                                        car[key] = car[key].replace(/\n/g, "");
+                                                    }
+                                                  }
+                                                }
+                                                console.log(car);
                                                 
                                             }
 
