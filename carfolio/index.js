@@ -11,7 +11,9 @@ console.log = function(d) { //
   log_stdout.write(util.format(d) + '\n\r');
 };
 
-var getModelsOfMake = function(make){
+var getModelsOfMake = function(make, callback){
+
+    var models = [];
 
     request("http://www.carfolio.com/specifications/", function(err, response, html){
 
@@ -24,6 +26,36 @@ var getModelsOfMake = function(make){
         else {
 
             var $ = cheerio.load(html);
+
+            var modelCount = 0;
+
+            $('.man').each(function(index){
+                if ($(this)[0].attribs.href.indexOf("models/") != -1){
+                    if ($(this)[0].children[0].children[0].data == make){
+                        request("http://www.carfolio.com/specifications/" + $(this)[0].attribs.href, function(err, response, html){
+
+                            if (err){
+
+                                console.log(err);
+                                return;
+
+                            }
+                            else {
+
+                                var $ = cheerio.load(html);
+
+                                $('a').each(function(index){
+                                    if ($(this)[0].attribs.href.indexOf("car/") != -1 && $(this)[0].attribs.href.indexOf("specifications/") == -1){
+                                        modelCount++;
+                                    }
+                                });
+
+                            }
+
+                        });
+                    }
+                }
+            });
 
             $('.man').each(function(index){
                 if ($(this)[0].attribs.href.indexOf("models/") != -1){
@@ -156,7 +188,10 @@ var getModelsOfMake = function(make){
                                                     }
                                                   }
                                                 }
-                                                console.log(car);
+                                                models.push(car);
+                                                if (models.length == modelCount){
+                                                    callback (models);
+                                                }
                                                 
                                             }
 
@@ -177,4 +212,28 @@ var getModelsOfMake = function(make){
 
 };
 
-getModelsOfMake("W Motors");
+var makeToGetModelsFor = "Ferrari";
+
+getModelsOfMake(makeToGetModelsFor, function(models){
+    try {
+       fs.mkdirSync(__dirname + "/Automobiles"); 
+    }
+    catch (e){
+
+    }
+    try {
+       fs.mkdirSync(__dirname + "/Automobiles/" + makeToGetModelsFor); 
+    }
+    catch (e){
+        
+    }
+    for (var i = 0; i < models.length; i++){
+        try {
+           fs.mkdirSync(__dirname + "/Automobiles/" + makeToGetModelsFor + "/" + models[i].model); 
+        }
+        catch (e){
+            
+        }
+        fs.writeFileSync(__dirname + "/Automobiles/" + makeToGetModelsFor + "/" + models[i].model + "/" + models[i].year + ".json", JSON.stringify(models[i]));
+    }
+});
