@@ -1,0 +1,12 @@
+add:
+
+wheelbase
+length
+drag coefficient
+
+remove:
+
+bodywork
+dimensions & weights
+aerodynamics
+engine

@@ -6,7 +6,7 @@ var util = require('util');
 var log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
 var log_stdout = process.stdout;
 
-console.log = function(d) { //
+console.log = function(d) {
   log_file.write(util.format(d) + '\n\r\n\r');
   log_stdout.write(util.format(d) + '\n\r');
 };
@@ -92,69 +92,94 @@ var getModelsOfMake = function(make, callback){
                                                     year: $('.Year')[0].children[0].data
                                                 };
 
+                                                // $('th').each(function(index){
+                                                //     if ($(this)[0].children[0]){
+                                                //         if ($(this)[0].children[0].data && /\S/.test($(this)[0].children[0].data)){
+                                                //             //console.log($(this)[0].children[0].data);
+                                                //             if (!$(this)[0].parent.children[2]){
+                                                //                 car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[1].children[0].data;
+                                                //                 //console.log($(this)[0].parent.children[1].children[0].data);
+                                                //             }
+                                                //             else if (!$(this)[0].parent.children[2].children){
+                                                //                 if (!$(this)[0].parent.children[3]){
+                                                //                     car[$(this)[0].children[0].data.toLowerCase()] = "";
+                                                //                     //console.log("");
+                                                //                 }
+                                                //                 else if (!$(this)[0].parent.children[3].children[0]){
+                                                //                     car[$(this)[0].children[0].data.toLowerCase()] = "";
+                                                //                     //console.log("");
+                                                //                 }
+                                                //                 else {
+                                                //                     if ($(this)[0].children[0].data.toLowerCase().indexOf("kerb weight") != -1){
+                                                //                         car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].children[0].data;
+                                                //                         //console.log($(this)[0].parent.children[3].children[0].children[0].data);
+                                                //                     }
+                                                //                     else {
+                                                //                         if ($(this)[0].children[0].data.toLowerCase().indexOf("stroke ratio") != -1){
+                                                //                             car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].children[0].data;
+                                                //                             //console.log($(this)[0].parent.children[3].children[0].children[0].data);
+                                                //                         }
+                                                //                         else {
+                                                //                             car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].data;
+                                                //                             //console.log($(this)[0].parent.children[3].children[0].data);
+                                                //                         }  
+                                                //                     }
+                                                //                 }
+                                                //             }
+                                                //             else if (!$(this)[0].parent.children[2].children[0]){
+                                                //                 car[$(this)[0].children[0].data.toLowerCase()] = "";
+                                                //                 //console.log("");
+                                                //             }
+                                                //             else {
+                                                //                 car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[2].children[0].data;
+                                                //                 //console.log($(this)[0].parent.children[2].children[0].data);
+                                                //             }
+                                                //         }
+                                                //         else {
+                                                //             if ($(this)[0].children[0].name == 'strong' && $(this)[0].children[0].children[0]){
+                                                //                 //console.log($(this)[0].children[0].children[0].data);
+                                                //                 if ($(this)[0].parent.children[3].children[0]){
+                                                //                     if (!$(this)[0].parent.children[3].children[0].children){
+                                                //                         car[$(this)[0].children[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].data;
+                                                //                         //console.log($(this)[0].parent.children[3].children[0].data);
+                                                //                     }
+                                                //                     else if (!$(this)[0].parent.children[3].children[0].children[0]){
+                                                //                         car[$(this)[0].children[0].children[0].data.toLowerCase()] = "";
+                                                //                         //console.log("");
+                                                //                     }
+                                                //                     else {
+                                                //                         car[$(this)[0].children[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].children[0].data;
+                                                //                         //console.log($(this)[0].parent.children[3].children[0].children[0].data);
+                                                //                     }
+                                                //                 }
+                                                //             }
+                                                //         }
+                                                //     }
+                                                // });
+                    
                                                 $('th').each(function(index){
-                                                    if ($(this)[0].children[0]){
-                                                        if ($(this)[0].children[0].data && /\S/.test($(this)[0].children[0].data)){
-                                                            //console.log($(this)[0].children[0].data);
-                                                            if (!$(this)[0].parent.children[2]){
-                                                                car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[1].children[0].data;
-                                                                //console.log($(this)[0].parent.children[1].children[0].data);
-                                                            }
-                                                            else if (!$(this)[0].parent.children[2].children){
-                                                                if (!$(this)[0].parent.children[3]){
-                                                                    car[$(this)[0].children[0].data.toLowerCase()] = "";
-                                                                    //console.log("");
-                                                                }
-                                                                else if (!$(this)[0].parent.children[3].children[0]){
-                                                                    car[$(this)[0].children[0].data.toLowerCase()] = "";
-                                                                    //console.log("");
-                                                                }
-                                                                else {
-                                                                    if ($(this)[0].children[0].data.toLowerCase().indexOf("kerb weight") != -1){
-                                                                        car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].children[0].data;
-                                                                        //console.log($(this)[0].parent.children[3].children[0].children[0].data);
-                                                                    }
-                                                                    else {
-                                                                        if ($(this)[0].children[0].data.toLowerCase().indexOf("stroke ratio") != -1){
-                                                                            car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].children[0].data;
-                                                                            //console.log($(this)[0].parent.children[3].children[0].children[0].data);
-                                                                        }
-                                                                        else {
-                                                                            car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].data;
-                                                                            //console.log($(this)[0].parent.children[3].children[0].data);
-                                                                        }  
-                                                                    }
-                                                                }
-                                                            }
-                                                            else if (!$(this)[0].parent.children[2].children[0]){
-                                                                car[$(this)[0].children[0].data.toLowerCase()] = "";
-                                                                //console.log("");
-                                                            }
-                                                            else {
-                                                                car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[2].children[0].data;
-                                                                //console.log($(this)[0].parent.children[2].children[0].data);
-                                                            }
+                                                    for (var i = 0; i < $(this)[0].parent.children.length; i++){
+                                                        if ($(this)[0].parent.children[i].data && /\S/.test($(this)[0].parent.children[i].data)){
+                                                            console.log($(this)[0].parent.children[i].data);
                                                         }
-                                                        else {
-                                                            if ($(this)[0].children[0].name == 'strong' && $(this)[0].children[0].children[0]){
-                                                                //console.log($(this)[0].children[0].children[0].data);
-                                                                if (!$(this)[0].parent.children[3].children[0].children){
-                                                                    car[$(this)[0].children[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].data;
-                                                                    //console.log($(this)[0].parent.children[3].children[0].data);
+                                                        else if ($(this)[0].parent.children[i].children) {
+                                                            for (var j = 0; j < $(this)[0].parent.children[i].children.length; j++){
+                                                                if ($(this)[0].parent.children[i].children[j].data && /\S/.test($(this)[0].parent.children[i].children[j].data)){
+                                                                    console.log($(this)[0].parent.children[i].children[j].data);
                                                                 }
-                                                                else if (!$(this)[0].parent.children[3].children[0].children[0]){
-                                                                    car[$(this)[0].children[0].children[0].data.toLowerCase()] = "";
-                                                                    //console.log("");
-                                                                }
-                                                                else {
-                                                                    car[$(this)[0].children[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].children[0].data;
-                                                                    //console.log($(this)[0].parent.children[3].children[0].children[0].data);
+                                                                else if ($(this)[0].parent.children[i].children[j].children){
+                                                                    for (var k = 0; k < $(this)[0].parent.children[i].children[j].children.length; k++){
+                                                                        if ($(this)[0].parent.children[i].children[j].children[k].data && /\S/.test($(this)[0].parent.children[i].children[j].children[k].data)){
+                                                                            console.log($(this)[0].parent.children[i].children[j].children[k].data);
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     }
+                                                    return;
                                                 });
-                    
+
                                                 //console.log("Bore x Stroke");
                                                 var bore = undefined;
                                                 var stroke = undefined;
@@ -212,7 +237,7 @@ var getModelsOfMake = function(make, callback){
 
 };
 
-var makeToGetModelsFor = "Ferrari";
+var makeToGetModelsFor = "Abadal";
 
 getModelsOfMake(makeToGetModelsFor, function(models){
     try {
