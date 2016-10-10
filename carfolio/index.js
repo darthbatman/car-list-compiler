@@ -103,11 +103,22 @@ var getModelsOfMake = function(make, callback){
 
                                                 var $ = cheerio.load(html);
 
-                                                var car = {
-                                                    make: make,
-                                                    model: $('.model')[0].children[0].data,
-                                                    year: $('.Year')[0].children[0].data
-                                                };
+                                                var car = {};
+
+                                                if ($('.Year')[0]){
+                                                    car = {
+                                                        make: make,
+                                                        model: $('.model')[0].children[0].data,
+                                                        year: $('.Year')[0].children[0].data
+                                                    };
+                                                }
+                                                else {
+                                                    car = {
+                                                        make: make,
+                                                        model: $('.model')[0].children[0].data,
+                                                        year: $('.modelyear')[0].children[0].data
+                                                    };
+                                                }
 
                                                 var info = [];
 
@@ -220,10 +231,12 @@ var getModelsOfMake = function(make, callback){
                                                 for (var i = 0; i < info.length; i++){
                                                     if (getInfoType(info[i]) == "property"){
                                                         if (getInfoType(info[i + 1]) == "value"){
-                                                            console.log(info[i].replace(/\r/g, "").replace(/\n/g, "") + ": " + info[i + 1].replace(/\r/g, "").replace(/\n/g, ""));
+                                                            //console.log(info[i].replace(/\r/g, "").replace(/\n/g, "") + ": " + info[i + 1].replace(/\r/g, "").replace(/\n/g, ""));
+                                                            car[info[i].replace(/\r/g, "").replace(/\n/g, "").toLowerCase()] = info[i + 1].replace(/\r/g, "").replace(/\n/g, "").toLowerCase();
                                                         }
                                                         else {
-                                                            console.log(info[i].replace(/\r/g, "").replace(/\n/g, "") + ": " + "");
+                                                            //console.log(info[i].replace(/\r/g, "").replace(/\n/g, "") + ": " + "");
+                                                            car[info[i].replace(/\r/g, "").replace(/\n/g, "").toLowerCase()] = "";
                                                         }
                                                     }
                                                 }
@@ -247,19 +260,19 @@ var getModelsOfMake = function(make, callback){
                                                 else {
                                                     car["Bore x Stroke".toLowerCase()] = '';
                                                 }
-                                                for (var key in car) {
-                                                  if (car.hasOwnProperty(key)) {
-                                                    if (key == 'carfolio.com id' || key == 'carfolio calculated ' || key == 'production total' || key == 'model code' || key == 'model family' || key == 'rac rating' || key == 'insurance classification' || key == 'tax band'){
-                                                        delete car[key];
-                                                    }
-                                                    else if (!car[key]){
-                                                        car[key] = '';
-                                                    }
-                                                    else {
-                                                        car[key] = car[key].replace(/\n/g, "");
-                                                    }
-                                                  }
-                                                }
+                                                // for (var key in car) {
+                                                //   if (car.hasOwnProperty(key)) {
+                                                //     if (key == 'carfolio.com id' || key == 'carfolio calculated ' || key == 'production total' || key == 'model code' || key == 'model family' || key == 'rac rating' || key == 'insurance classification' || key == 'tax band'){
+                                                //         delete car[key];
+                                                //     }
+                                                //     else if (!car[key]){
+                                                //         car[key] = '';
+                                                //     }
+                                                //     else {
+                                                //         car[key] = car[key].replace(/\n/g, "");
+                                                //     }
+                                                //   }
+                                                // }
                                                 models.push(car);
                                                 if (models.length == modelCount){
                                                     callback (models);
@@ -284,7 +297,7 @@ var getModelsOfMake = function(make, callback){
 
 };
 
-var makeToGetModelsFor = "Abadal";
+var makeToGetModelsFor = "Ferrari";
 
 getModelsOfMake(makeToGetModelsFor, function(models){
     try {
@@ -294,18 +307,18 @@ getModelsOfMake(makeToGetModelsFor, function(models){
 
     }
     try {
-       fs.mkdirSync(__dirname + "/Automobiles/" + makeToGetModelsFor); 
+       fs.mkdirSync(__dirname + "/Automobiles/" + makeToGetModelsFor.replace(/\//g, "").replace(/\\/g, "")); 
     }
     catch (e){
         
     }
     for (var i = 0; i < models.length; i++){
         try {
-           fs.mkdirSync(__dirname + "/Automobiles/" + makeToGetModelsFor + "/" + models[i].model); 
+           fs.mkdirSync(__dirname + "/Automobiles/" + makeToGetModelsFor.replace(/\//g, "").replace(/\\/g, "") + "/" + models[i].model.replace(/\//g, "").replace(/\\/g, "")); 
         }
         catch (e){
-            
+
         }
-        fs.writeFileSync(__dirname + "/Automobiles/" + makeToGetModelsFor + "/" + models[i].model + "/" + models[i].year + ".json", JSON.stringify(models[i]));
+        fs.writeFileSync(__dirname + "/Automobiles/" + makeToGetModelsFor.replace(/\//g, "").replace(/\\/g, "") + "/" + models[i].model.replace(/\//g, "").replace(/\\/g, "") + "/" + models[i].year + ".json", JSON.stringify(models[i]));
     }
 });
