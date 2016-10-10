@@ -11,6 +11,23 @@ console.log = function(d) {
   log_stdout.write(util.format(d) + '\n\r');
 };
 
+var getInfoType = function(data){
+
+    var properties = ["body type","number of doors","designer","wheelbase","track/tread (front)","track/tread (rear)","length","width","height","ground clearance","length:wheelbase ratio","kerb weight","weight distribution","fuel tank capacity","drag coefficient","frontal area","cda","engine type","engine manufacturer","engine code","cylinders","capacity","bore/stroke ratio","maximum power output","specific output","maximum torque","specific torque","engine construction","sump","compression ratio","fuel system","bmep (brake mean effective pressure)","maximum rpm","crankshaft bearings","engine coolant","unitary capacity","aspiration","compressor","intercooler","catalytic converter","acceleration 0-80km/h (50mph)","acceleration 0-60mph","acceleration 0-100km/h","acceleration 0-160km/h (100mph)","standing quarter-mile","standing kilometre","maximum speed","power-to-weight ratio","weight-to-power ratio","fuel consumption","universal consumption (calculated from the above)","litres per 100km","km per litre","uk mpg","us mpg","carbon dioxide emissions","carfolio calculated ","ved band","Effizienz (DE)","engine position","engine layout","drive wheels","torque split","steering","turns lock-to-lock","turning circle","front suspension","rear suspension","wheel size front","wheel size rear","tyres front","tyres rear","brakes f/r","front brake diameter","rear brake diameter","gearbox","top gear ratio","final drive ratio"];
+    var irrelevants = ["data","bodywork","dimensions & weights","aerodynamics","engine","performance","fuel consumption","chassis","general"];
+
+    if (properties.indexOf(data.toLowerCase()) != -1){
+        return "property";
+    }
+    else if (irrelevants.indexOf(data.toLowerCase()) != -1){
+        return "irrelevant";
+    }
+    else {
+        return "value";
+    }
+
+};
+
 var getModelsOfMake = function(make, callback){
 
     var models = [];
@@ -92,6 +109,8 @@ var getModelsOfMake = function(make, callback){
                                                     year: $('.Year')[0].children[0].data
                                                 };
 
+                                                var info = [];
+
                                                 // $('th').each(function(index){
                                                 //     if ($(this)[0].children[0]){
                                                 //         if ($(this)[0].children[0].data && /\S/.test($(this)[0].children[0].data)){
@@ -160,17 +179,35 @@ var getModelsOfMake = function(make, callback){
                                                 $('th').each(function(index){
                                                     for (var i = 0; i < $(this)[0].parent.children.length; i++){
                                                         if ($(this)[0].parent.children[i].data && /\S/.test($(this)[0].parent.children[i].data)){
-                                                            console.log($(this)[0].parent.children[i].data);
+                                                            // if (isProperty($(this)[0].parent.children[i].data)){
+                                                            //     console.log("Property1: " + $(this)[0].parent.children[i].data);
+                                                            // }
+                                                            // else {
+                                                            //     console.log("Value1: " + $(this)[0].parent.children[i].data);
+                                                            // }
+                                                            info.push($(this)[0].parent.children[i].data);
                                                         }
                                                         else if ($(this)[0].parent.children[i].children) {
                                                             for (var j = 0; j < $(this)[0].parent.children[i].children.length; j++){
                                                                 if ($(this)[0].parent.children[i].children[j].data && /\S/.test($(this)[0].parent.children[i].children[j].data)){
-                                                                    console.log($(this)[0].parent.children[i].children[j].data);
+                                                                    // if (isProperty($(this)[0].parent.children[i].children[j].data)){
+                                                                    //     console.log("Property2: " + $(this)[0].parent.children[i].children[j].data);
+                                                                    // }
+                                                                    // else {
+                                                                    //     console.log("Value2: " + $(this)[0].parent.children[i].children[j].data);
+                                                                    // }
+                                                                    info.push($(this)[0].parent.children[i].children[j].data);
                                                                 }
                                                                 else if ($(this)[0].parent.children[i].children[j].children){
                                                                     for (var k = 0; k < $(this)[0].parent.children[i].children[j].children.length; k++){
                                                                         if ($(this)[0].parent.children[i].children[j].children[k].data && /\S/.test($(this)[0].parent.children[i].children[j].children[k].data)){
-                                                                            console.log($(this)[0].parent.children[i].children[j].children[k].data);
+                                                                            // if (isProperty($(this)[0].parent.children[i].children[j].children[k].data)){
+                                                                            //     console.log("Property3: " + $(this)[0].parent.children[i].children[j].children[k].data);
+                                                                            // }
+                                                                            // else {
+                                                                            //     console.log("Value3: " + $(this)[0].parent.children[i].children[j].children[k].data);
+                                                                            // }
+                                                                            info.push($(this)[0].parent.children[i].children[j].children[k].data);
                                                                         }
                                                                     }
                                                                 }
@@ -180,7 +217,17 @@ var getModelsOfMake = function(make, callback){
                                                     return;
                                                 });
 
-                                                //console.log("Bore x Stroke");
+                                                for (var i = 0; i < info.length; i++){
+                                                    if (getInfoType(info[i]) == "property"){
+                                                        if (getInfoType(info[i + 1]) == "value"){
+                                                            console.log(info[i].replace(/\r/g, "").replace(/\n/g, "") + ": " + info[i + 1].replace(/\r/g, "").replace(/\n/g, ""));
+                                                        }
+                                                        else {
+                                                            console.log(info[i].replace(/\r/g, "").replace(/\n/g, "") + ": " + "");
+                                                        }
+                                                    }
+                                                }
+
                                                 var bore = undefined;
                                                 var stroke = undefined;
                                                 $('a').each(function(index){
