@@ -1,6 +1,11 @@
 var fs = require("fs");
 var request = require("request");
 var cheerio = require("cheerio");
+var prettyjson = require('prettyjson');
+
+var options = {
+  noColor: true
+};
 
 var util = require('util');
 var log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
@@ -122,102 +127,19 @@ var getModelsOfMake = function(make, callback){
 
                                                 var info = [];
 
-                                                // $('th').each(function(index){
-                                                //     if ($(this)[0].children[0]){
-                                                //         if ($(this)[0].children[0].data && /\S/.test($(this)[0].children[0].data)){
-                                                //             //console.log($(this)[0].children[0].data);
-                                                //             if (!$(this)[0].parent.children[2]){
-                                                //                 car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[1].children[0].data;
-                                                //                 //console.log($(this)[0].parent.children[1].children[0].data);
-                                                //             }
-                                                //             else if (!$(this)[0].parent.children[2].children){
-                                                //                 if (!$(this)[0].parent.children[3]){
-                                                //                     car[$(this)[0].children[0].data.toLowerCase()] = "";
-                                                //                     //console.log("");
-                                                //                 }
-                                                //                 else if (!$(this)[0].parent.children[3].children[0]){
-                                                //                     car[$(this)[0].children[0].data.toLowerCase()] = "";
-                                                //                     //console.log("");
-                                                //                 }
-                                                //                 else {
-                                                //                     if ($(this)[0].children[0].data.toLowerCase().indexOf("kerb weight") != -1){
-                                                //                         car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].children[0].data;
-                                                //                         //console.log($(this)[0].parent.children[3].children[0].children[0].data);
-                                                //                     }
-                                                //                     else {
-                                                //                         if ($(this)[0].children[0].data.toLowerCase().indexOf("stroke ratio") != -1){
-                                                //                             car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].children[0].data;
-                                                //                             //console.log($(this)[0].parent.children[3].children[0].children[0].data);
-                                                //                         }
-                                                //                         else {
-                                                //                             car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].data;
-                                                //                             //console.log($(this)[0].parent.children[3].children[0].data);
-                                                //                         }  
-                                                //                     }
-                                                //                 }
-                                                //             }
-                                                //             else if (!$(this)[0].parent.children[2].children[0]){
-                                                //                 car[$(this)[0].children[0].data.toLowerCase()] = "";
-                                                //                 //console.log("");
-                                                //             }
-                                                //             else {
-                                                //                 car[$(this)[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[2].children[0].data;
-                                                //                 //console.log($(this)[0].parent.children[2].children[0].data);
-                                                //             }
-                                                //         }
-                                                //         else {
-                                                //             if ($(this)[0].children[0].name == 'strong' && $(this)[0].children[0].children[0]){
-                                                //                 //console.log($(this)[0].children[0].children[0].data);
-                                                //                 if ($(this)[0].parent.children[3].children[0]){
-                                                //                     if (!$(this)[0].parent.children[3].children[0].children){
-                                                //                         car[$(this)[0].children[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].data;
-                                                //                         //console.log($(this)[0].parent.children[3].children[0].data);
-                                                //                     }
-                                                //                     else if (!$(this)[0].parent.children[3].children[0].children[0]){
-                                                //                         car[$(this)[0].children[0].children[0].data.toLowerCase()] = "";
-                                                //                         //console.log("");
-                                                //                     }
-                                                //                     else {
-                                                //                         car[$(this)[0].children[0].children[0].data.toLowerCase()] = $(this)[0].parent.children[3].children[0].children[0].data;
-                                                //                         //console.log($(this)[0].parent.children[3].children[0].children[0].data);
-                                                //                     }
-                                                //                 }
-                                                //             }
-                                                //         }
-                                                //     }
-                                                // });
-                    
                                                 $('th').each(function(index){
                                                     for (var i = 0; i < $(this)[0].parent.children.length; i++){
                                                         if ($(this)[0].parent.children[i].data && /\S/.test($(this)[0].parent.children[i].data)){
-                                                            // if (isProperty($(this)[0].parent.children[i].data)){
-                                                            //     console.log("Property1: " + $(this)[0].parent.children[i].data);
-                                                            // }
-                                                            // else {
-                                                            //     console.log("Value1: " + $(this)[0].parent.children[i].data);
-                                                            // }
                                                             info.push($(this)[0].parent.children[i].data);
                                                         }
                                                         else if ($(this)[0].parent.children[i].children) {
                                                             for (var j = 0; j < $(this)[0].parent.children[i].children.length; j++){
                                                                 if ($(this)[0].parent.children[i].children[j].data && /\S/.test($(this)[0].parent.children[i].children[j].data)){
-                                                                    // if (isProperty($(this)[0].parent.children[i].children[j].data)){
-                                                                    //     console.log("Property2: " + $(this)[0].parent.children[i].children[j].data);
-                                                                    // }
-                                                                    // else {
-                                                                    //     console.log("Value2: " + $(this)[0].parent.children[i].children[j].data);
-                                                                    // }
                                                                     info.push($(this)[0].parent.children[i].children[j].data);
                                                                 }
                                                                 else if ($(this)[0].parent.children[i].children[j].children){
                                                                     for (var k = 0; k < $(this)[0].parent.children[i].children[j].children.length; k++){
                                                                         if ($(this)[0].parent.children[i].children[j].children[k].data && /\S/.test($(this)[0].parent.children[i].children[j].children[k].data)){
-                                                                            // if (isProperty($(this)[0].parent.children[i].children[j].children[k].data)){
-                                                                            //     console.log("Property3: " + $(this)[0].parent.children[i].children[j].children[k].data);
-                                                                            // }
-                                                                            // else {
-                                                                            //     console.log("Value3: " + $(this)[0].parent.children[i].children[j].children[k].data);
-                                                                            // }
                                                                             info.push($(this)[0].parent.children[i].children[j].children[k].data);
                                                                         }
                                                                     }
@@ -231,11 +153,9 @@ var getModelsOfMake = function(make, callback){
                                                 for (var i = 0; i < info.length; i++){
                                                     if (getInfoType(info[i]) == "property"){
                                                         if (getInfoType(info[i + 1]) == "value"){
-                                                            //console.log(info[i].replace(/\r/g, "").replace(/\n/g, "") + ": " + info[i + 1].replace(/\r/g, "").replace(/\n/g, ""));
                                                             car[info[i].replace(/\r/g, "").replace(/\n/g, "").toLowerCase()] = info[i + 1].replace(/\r/g, "").replace(/\n/g, "").toLowerCase();
                                                         }
                                                         else {
-                                                            //console.log(info[i].replace(/\r/g, "").replace(/\n/g, "") + ": " + "");
                                                             car[info[i].replace(/\r/g, "").replace(/\n/g, "").toLowerCase()] = "";
                                                         }
                                                     }
@@ -253,26 +173,13 @@ var getModelsOfMake = function(make, callback){
                                                         }
                                                     }
                                                 });
-                                                //console.log(bore + " x " + stroke);
+
                                                 if (bore && stroke){
                                                    car["Bore x Stroke".toLowerCase()] = bore + " x " + stroke; 
                                                 }
                                                 else {
                                                     car["Bore x Stroke".toLowerCase()] = '';
                                                 }
-                                                // for (var key in car) {
-                                                //   if (car.hasOwnProperty(key)) {
-                                                //     if (key == 'carfolio.com id' || key == 'carfolio calculated ' || key == 'production total' || key == 'model code' || key == 'model family' || key == 'rac rating' || key == 'insurance classification' || key == 'tax band'){
-                                                //         delete car[key];
-                                                //     }
-                                                //     else if (!car[key]){
-                                                //         car[key] = '';
-                                                //     }
-                                                //     else {
-                                                //         car[key] = car[key].replace(/\n/g, "");
-                                                //     }
-                                                //   }
-                                                // }
                                                 models.push(car);
                                                 if (models.length == modelCount){
                                                     callback (models);
@@ -297,28 +204,249 @@ var getModelsOfMake = function(make, callback){
 
 };
 
-var makeToGetModelsFor = "Ferrari";
+var getModelsFromPage = function(page, callback){
 
-getModelsOfMake(makeToGetModelsFor, function(models){
-    try {
-       fs.mkdirSync(__dirname + "/Automobiles"); 
-    }
-    catch (e){
+    var models = [];
 
-    }
-    try {
-       fs.mkdirSync(__dirname + "/Automobiles/" + makeToGetModelsFor.replace(/\//g, "").replace(/\\/g, "")); 
-    }
-    catch (e){
+    request("http://www.carfolio.com/specifications/", function(err, response, html){
+
+        if (err){
+
+            console.log(err);
+            return;
+
+        }
+        else {
+
+            var $ = cheerio.load(html);
+
+            var modelCount = 0;
+
+            request("http://www.carfolio.com/specifications/" + page, function(err, response, html){
+
+                if (err){
+
+                    console.log(err);
+                    return;
+
+                }
+                else {
+
+                    var $ = cheerio.load(html);
+
+                    $('a').each(function(index){
+                        if ($(this)[0].attribs.href.indexOf("car/") != -1 && $(this)[0].attribs.href.indexOf("specifications/") == -1){
+                            modelCount++;
+                        }
+                    });
+
+                }
+
+            });
+
+            request("http://www.carfolio.com/specifications/" + page, function(err, response, html){
+
+                if (err){
+
+                    console.log(err);
+                    return;
+
+                }
+                else {
+
+                    var $ = cheerio.load(html);
+
+                    $('a').each(function(index){
+                        if ($(this)[0].attribs.href.indexOf("car/") != -1 && $(this)[0].attribs.href.indexOf("specifications/") == -1){
+                            request("http://www.carfolio.com/specifications/models/" + $(this)[0].attribs.href, function(err, response, html){
+
+                                if (err){
+
+                                    console.log(err);
+                                    return;
+
+                                }
+                                else {
+
+                                    var $ = cheerio.load(html);
+
+                                    var car = {};
+
+                                    if ($('.Year')[0]){
+                                        car = {
+                                            make: $('.manufacturer')[0].children[0].data,
+                                            model: $('.model')[0].children[0].data,
+                                            year: $('.Year')[0].children[0].data
+                                        };
+                                    }
+                                    else {
+                                        car = {
+                                            make: $('.manufacturer')[0].children[0].data,
+                                            model: $('.model')[0].children[0].data,
+                                            year: $('.modelyear')[0].children[0].data
+                                        };
+                                    }
+
+                                    var info = [];
+
+                                    $('th').each(function(index){
+                                        for (var i = 0; i < $(this)[0].parent.children.length; i++){
+                                            if ($(this)[0].parent.children[i].data && /\S/.test($(this)[0].parent.children[i].data)){
+                                                info.push($(this)[0].parent.children[i].data);
+                                            }
+                                            else if ($(this)[0].parent.children[i].children) {
+                                                for (var j = 0; j < $(this)[0].parent.children[i].children.length; j++){
+                                                    if ($(this)[0].parent.children[i].children[j].data && /\S/.test($(this)[0].parent.children[i].children[j].data)){
+                                                        info.push($(this)[0].parent.children[i].children[j].data);
+                                                    }
+                                                    else if ($(this)[0].parent.children[i].children[j].children){
+                                                        for (var k = 0; k < $(this)[0].parent.children[i].children[j].children.length; k++){
+                                                            if ($(this)[0].parent.children[i].children[j].children[k].data && /\S/.test($(this)[0].parent.children[i].children[j].children[k].data)){
+                                                                info.push($(this)[0].parent.children[i].children[j].children[k].data);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        return;
+                                    });
+
+                                    for (var i = 0; i < info.length; i++){
+                                        if (getInfoType(info[i]) == "property"){
+                                            if (getInfoType(info[i + 1]) == "value"){
+                                                car[info[i].replace(/\r/g, "").replace(/\n/g, "").toLowerCase()] = info[i + 1].replace(/\r/g, "").replace(/\n/g, "").toLowerCase();
+                                            }
+                                            else {
+                                                car[info[i].replace(/\r/g, "").replace(/\n/g, "").toLowerCase()] = "";
+                                            }
+                                        }
+                                    }
+
+                                    var bore = undefined;
+                                    var stroke = undefined;
+                                    $('a').each(function(index){
+                                        if ($(this)[0].attribs.href.indexOf("bore") != -1){
+                                            if (!bore){
+                                                bore = $(this)[0].attribs.href.substring($(this)[0].attribs.href.lastIndexOf("=") + 1);
+                                            }
+                                            else {
+                                                stroke = $(this)[0].attribs.href.substring($(this)[0].attribs.href.lastIndexOf("=") + 1);
+                                            }
+                                        }
+                                    });
+
+                                    if (bore && stroke){
+                                       car["Bore x Stroke".toLowerCase()] = bore + " x " + stroke; 
+                                    }
+                                    else {
+                                        car["Bore x Stroke".toLowerCase()] = '';
+                                    }
+                                    models.push(car);
+                                    if (models.length == modelCount){
+                                        callback (models);
+                                    }
+                                    
+                                }
+
+                            });
+                        }
+                    });
+                    
+                }
+
+            });
+            
+        }
+
+    });
+
+};
+
+var getAllModels = function(callback){
+
+    request("http://www.carfolio.com/specifications/", function(err, response, html){
+
+        if (err){
+
+            console.log(err);
+            return;
+
+        }
+        else {
+
+            var $ = cheerio.load(html);
+
+            var models = [];
+
+            $('.man').each(function(index){
+                if (models.indexOf($(this)[0].children[0].children[0].data) == -1){
+                    models.push($(this)[0].children[0].children[0].data);
+                }
+            });
+
+            callback(models);
+
+        }
+
+    });
+
+
+};
+
+// getAllModels(function(models){
+    
+// });
+
+// var makeToGetModelsFor = "Ace";
+
+// getModelsOfMake(makeToGetModelsFor, function(models){
+//     try {
+//        fs.mkdirSync(__dirname + "/Automobiles"); 
+//     }
+//     catch (e){
+
+//     }
+//     try {
+//        fs.mkdirSync(__dirname + "/Automobiles/" + makeToGetModelsFor.replace(/\//g, "").replace(/\\/g, "")); 
+//     }
+//     catch (e){
         
-    }
-    for (var i = 0; i < models.length; i++){
-        try {
-           fs.mkdirSync(__dirname + "/Automobiles/" + makeToGetModelsFor.replace(/\//g, "").replace(/\\/g, "") + "/" + models[i].model.replace(/\//g, "").replace(/\\/g, "")); 
-        }
-        catch (e){
+//     }
+//     for (var i = 0; i < models.length; i++){
+//         try {
+//            fs.mkdirSync(__dirname + "/Automobiles/" + makeToGetModelsFor.replace(/\//g, "").replace(/\\/g, "") + "/" + models[i].model.replace(/\//g, "").replace(/\\/g, "")); 
+//         }
+//         catch (e){
 
-        }
-        fs.writeFileSync(__dirname + "/Automobiles/" + makeToGetModelsFor.replace(/\//g, "").replace(/\\/g, "") + "/" + models[i].model.replace(/\//g, "").replace(/\\/g, "") + "/" + models[i].year + ".json", JSON.stringify(models[i]));
-    }
-});
+//         }
+//         fs.writeFileSync(__dirname + "/Automobiles/" + makeToGetModelsFor.replace(/\//g, "").replace(/\\/g, "") + "/" + models[i].model.replace(/\//g, "").replace(/\\/g, "") + "/" + models[i].year + ".json", prettyjson.render(JSON.stringify(models[i]), options));
+//     }
+// });
+
+// var pageToGetModelsFor = "models/?man=6916";
+// var makeToGetModelsFor = "Adams";
+
+// getModelsFromPage(pageToGetModelsFor, function(models){
+//     try {
+//        fs.mkdirSync(__dirname + "/Automobiles"); 
+//     }
+//     catch (e){
+
+//     }
+//     try {
+//        fs.mkdirSync(__dirname + "/Automobiles/" + makeToGetModelsFor.replace(/\//g, "").replace(/\\/g, "")); 
+//     }
+//     catch (e){
+        
+//     }
+//     for (var i = 0; i < models.length; i++){
+//         try {
+//            fs.mkdirSync(__dirname + "/Automobiles/" + makeToGetModelsFor.replace(/\//g, "").replace(/\\/g, "") + "/" + models[i].model.replace(/\//g, "").replace(/\\/g, "")); 
+//         }
+//         catch (e){
+
+//         }
+//         fs.writeFileSync(__dirname + "/Automobiles/" + makeToGetModelsFor.replace(/\//g, "").replace(/\\/g, "") + "/" + models[i].model.replace(/\//g, "").replace(/\\/g, "") + "/" + models[i].year + ".json", prettyjson.render(JSON.stringify(models[i]), options));
+//     }
+// });
